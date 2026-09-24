@@ -1,0 +1,67 @@
+# MATLAB editor / session artefacts
+*.asv
+*.m~
+*.autosave
+slprj/
+octave-workspace
+
+# Compiled objects (the prebuilt .mex* binaries ARE tracked -- see .gitattributes)
+*.o
+*.obj
+*.lib
+*.exp
+*.pdb
+
+# OS
+.DS_Store
+._*
+Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Experiment output.  This project is deliberately code-only: descriptors,
+# distance matrices, recognition results and figures are all regenerable by
+# re-running the pipeline, and the datasets are obtained from their original
+# sources (see README).  Keeping them out is what stops the repository
+# ballooning the way the original workspace did.
+#
+# If you ever need to commit one on purpose:  git add -f <file>
+# ---------------------------------------------------------------------------
+*.mat
+*.fig
+*.tif
+*.tiff
+*.png
+*.jpg
+*.jpeg
+*.avi
+*.mp4
+
+# Raw dataset files
+*.c3d
+*.C3D
+*.bvh
+*.amc
+*.sign
+*.tsd
+*.tagstream
+*.csv
+*.xlsx
+*.txt.skeleton
+*.skeleton
+*.bin
+
+# Visual Studio build artefacts
+*.sdf
+*.suo
+*.VC.db
+ipch/
+Debug/
+x64/
+
+# Local search evidence includes workstation inventories and conversation logs.
+docs/fisher-search-evidence-*/
+
+# Development environments and Python caches
+.venv/
+__pycache__/
+*.pyc

@@ -1,0 +1,3 @@
+# Formatting and static analysis only; these are not MATLAB runtime dependencies.
+miss-hit==0.9.44
+clang-format==23.1.1

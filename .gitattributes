@@ -1,0 +1,33 @@
+# Normalise line endings on commit. Project source was converted to LF during
+# the 2026-09-24 polish; vendored working-copy files retain their original bytes.
+* text=auto eol=lf
+
+*.m      text
+*.c      text
+*.cpp    text
+*.h      text
+*.hpp    text
+*.md     text
+*.tsv    text
+*.sh     text eol=lf
+
+# Prebuilt binaries are tracked on purpose.  MelkmanConvexHull has no surviving
+# source, and the vlfeat / libsvm / Stochastic_Bosque binaries are the builds the
+# experiments ran with.  Never let git apply newline translation to them.
+*.mex*       binary
+*.mexw32     binary
+*.mexw64     binary
+*.mexa64     binary
+*.mexmaci64  binary
+*.dll        binary
+*.dylib      binary
+*.so         binary
+*.manifest   binary
+*.sln        text eol=crlf
+*.vcxproj    text eol=crlf
+*.filters    text eol=crlf
+
+# Keep GitHub's language statistics about *this* project rather than about the
+# bundled toolboxes.
+# Preserve upstream bytes and provenance hashes, including original line endings.
+thirdparty/** -text linguist-vendored

@@ -1,0 +1,46 @@
+{
+  "mbs/transform_firstOctant.m": [
+    {
+      "location": {
+        "filename": "mbs/transform_firstOctant.m",
+        "line": 41,
+        "col_start": 28,
+        "col_end": 28,
+        "context": "        if -pi < min_octant < -3 * pi / 4 && max_octant > 0"
+      },
+      "kind": "check",
+      "severity": "high",
+      "message": "chained relation does not work the way you think it does",
+      "fixable": false,
+      "fatal": false
+    },
+    {
+      "location": {
+        "filename": "mbs/transform_firstOctant.m",
+        "line": 69,
+        "col_start": 28,
+        "col_end": 28,
+        "context": "        if -pi < min_octant < -3 * pi / 4 && max_octant > 0"
+      },
+      "kind": "check",
+      "severity": "high",
+      "message": "chained relation does not work the way you think it does",
+      "fixable": false,
+      "fatal": false
+    },
+    {
+      "location": {
+        "filename": "mbs/transform_firstOctant.m",
+        "line": 101,
+        "col_start": 28,
+        "col_end": 28,
+        "context": "        if -pi < min_octant < -3 * pi / 4 && max_octant > 0"
+      },
+      "kind": "check",
+      "severity": "high",
+      "message": "chained relation does not work the way you think it does",
+      "fixable": false,
+      "fatal": false
+    }
+  ]
+}
