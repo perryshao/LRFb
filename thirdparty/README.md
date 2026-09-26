@@ -24,6 +24,12 @@ were taken from the already-trimmed copies in `Projects/TSSM/thirdparty`.
 
 ## vlfeat
 
+Local patch (2026-09-26): `toolbox/gmm/vl_gmm.c` now allocates only the requested
+1-5 outputs. This repairs the three-output caller overflow without upgrading
+VLFeat or changing its fitting algorithm. Rebuild this gateway from the patched
+source; the bundled historical binaries still contain their original code.
+See [the fix report](../docs/DEFECT_FIXES_2026-09-26.md).
+
 Only the two functions the pipeline uses were kept. `vl_gmm.m` / `vl_fisher.m` are help
 text; the work is done by `toolbox/mex/<platform>/vl_gmm.*` and `vl_fisher.*`, which load
 `libvl` (`libvl.so`, `libvl.dylib`, `vl.dll`) from the same folder. `setup_path` adds the

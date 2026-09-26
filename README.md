@@ -20,6 +20,17 @@ The [code review](docs/CODE_REVIEW.md) records the 2026-09-24 formatting and com
 cleanup, verification, and unresolved runtime issues. See [CONTRIBUTING.md](CONTRIBUTING.md)
 for the formatting tools and conventions.
 
+The [2026-09-26 defect fixes](docs/DEFECT_FIXES_2026-09-26.md) repair the two MEX
+output overflows, half-turn quaternions, empty pooling, oversampling, regression
+gradients and small-IP loader padding. All 19 Python/native checks and 51
+Octave/Python comparisons pass; the Octave pipeline uses the repaired gateways
+directly. See [validation/README.md](validation/README.md) to rerun the checks.
+Historical evidence remains in the [numerical report](docs/NUMERICAL_VALIDATION.md),
+[Octave report](docs/OCTAVE_VALIDATION.md) and
+[pre-fix rerun](docs/VALIDATION_RECHECK_2026-09-26.md).
+This is not full MATLAB certification or reproduction of the paper. The archived
+MEX binaries are unchanged: rebuild the two corrected gateways before MATLAB use.
+
 ---
 
 ## Paper
@@ -96,10 +107,10 @@ polished on 2026-09-24; see `tools/polish_manifest.tsv` for before/after hashes.
 
 Other things worth knowing:
 
-- `Myrotm2quat` divides by `4·qw`, so a 180° frame-to-frame rotation (trace = −1) gives
-  Inf/NaN; `RotM` itself is undefined if a frame row is all zero.
-- `fv_pooling_ts` also computes a per-frame Fisher vector (`fv_codes`) that is never used;
-  it only costs time.
+- `Myrotm2quat` now handles 180° rotations with a stable component-based formula.
+  `RotM` itself remains undefined if a frame row is all zero.
+- `fv_pooling_ts` preserves empty/fully occluded/zero pooled vectors as zeros and
+  no longer computes the unused per-frame Fisher pass.
 - `-g 2.79e-4` in the `svmtrain` options has no effect with `-t 0` (linear kernel).
 - MATLAB before R2018a has its own `svmtrain` in the Statistics Toolbox; `setup_path` puts
   LIBSVM on the path, but check `which svmtrain` if results look odd.
@@ -205,8 +216,10 @@ mex tricircumcenter3d.cpp
 ```
 
 There are no Apple-silicon (`maca64`) builds of anything; rebuild from source there.
-`Determine_segment.cpp` and `tricircumcenter3d.cpp` are byte-identical to the copies in
-IID `mbs/src`.
+`Determine_segment.cpp` shares its origin with IID. The circumcenter gateways
+now carry project-specific output-contract fixes; they are not byte-identical.
+For the repaired MATLAB gateways and path precedence, see the
+[rebuild instructions](docs/DEFECT_FIXES_2026-09-26.md#matlab-中使用修复后的-mex).
 
 ---
 

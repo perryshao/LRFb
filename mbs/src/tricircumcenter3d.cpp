@@ -433,6 +433,14 @@ REAL orient2d(REAL *pa, REAL *pb, REAL *pc)
 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
+    if (nrhs != 3 || nlhs < 1 || nlhs > 3)
+        mexErrMsgIdAndTxt("LRFb:circumcenterArity", "Expected three points and one to three outputs.");
+    for (int i = 0; i < 3; ++i)
+    {
+        if (!mxIsDouble(prhs[i]) || mxIsComplex(prhs[i]) || mxIsSparse(prhs[i]) ||
+            mxGetNumberOfElements(prhs[i]) != 3)
+            mexErrMsgIdAndTxt("LRFb:circumcenterInput", "Each point must be a full real double 3-vector.");
+    }
     double *a, *b, *c;
     double pa[2], pb[2], pc[2];
     double *circumcenter;
@@ -456,10 +464,21 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     /* create output arguments*/
     plhs[0] = mxCreateDoubleMatrix(m, n, mxREAL); //circumcenter
     circumcenter = mxGetPr(plhs[0]);
-    plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL); //xi
-    xi = mxGetPr(plhs[1]);
-    plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL); //eta
-    eta = mxGetPr(plhs[2]);
+    // Optional coordinates still participate in the shared formula. Keep
+    // unrequested values local instead of writing beyond the output array.
+    double local_xi = 0.0, local_eta = 0.0;
+    xi = &local_xi;
+    eta = &local_eta;
+    if (nlhs >= 2)
+    {
+        plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
+        xi = mxGetPr(plhs[1]);
+    }
+    if (nlhs >= 3)
+    {
+        plhs[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
+        eta = mxGetPr(plhs[2]);
+    }
 
     /* Use coordinates relative to point `a' of the triangle. */
     xba = b[0] - a[0];

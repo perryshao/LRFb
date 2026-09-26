@@ -1,5 +1,8 @@
 # LRFb 静态审阅与代码整理
 
+> 历史记录：本页描述修复前状态。已确认的 MEX、四元数、池化、采样、梯度和 IP 空槽问题
+> 后续修复及新的验证结果见 [2026-09-26 修复报告](DEFECT_FIXES_2026-09-26.md)；本页原始证据保留。
+
 日期：2026-09-24。
 
 ## 本次完成的工作
@@ -23,6 +26,7 @@ P1 表示可能导致崩溃、错误计算或关键实验无法执行；P2 表�
 
 | 优先级 | 位置 / 触发条件 | 发现及影响 |
 |---|---|---|
+| P1 | `thirdparty/vlfeat-0.9.20/toolbox/gmm/vl_gmm.c`，调用 `[means, covariances, priors] = vl_gmm(...)` | 2026-09-25 Octave 后续验证确认：无条件分配 `OUT(POSTERIORS)`（输出下标 4），三输出调用会越界。ASan 已复现 heap-buffer-overflow；测试使用五槽位网关适配继续运行，生产源码未改。见 [Octave 验证](OCTAVE_VALIDATION.md)。 |
 | P1 | `mbs/src/tricircumcenter3d.cpp` 的 `mexFunction` | 无条件写 `plhs[1]`、`plhs[2]`，而 `Estimate_Frenet` / `estimate_integral` 通常只请求一个输出。未按 `nlhs` 分配输出，有越界写风险；同时缺少 `nrhs`、类型、尺寸检查。`Determine_segment.cpp` 同样没有输入/输出数量防护。 |
 | P1 | `mbs/src/tricircumcenter3d.cpp` 的 `orient2dadapt` | 最后一个误差界分支之后存在没有返回值的执行路径。接近共线且需要进一步精确运算时，非 void 函数可能落到底部，结果未定义。 |
 | P1 | `encoding/GeneFisherCodeJointPyramid_whole.m` 与两个 `run.m` | `jointNum=2` 将已经按列合并的 T-by-14 描述子再沿行切成两半，输出维数为论文公式的两倍。与原始版本一致，但不能把它描述为与论文布局完全一致。 |

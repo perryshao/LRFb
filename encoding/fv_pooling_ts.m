@@ -4,20 +4,13 @@ function [beta] = fv_pooling_ts(feaSet, means, covariances, priors, normalizeF, 
 %   normalizeF is passed to vl_fisher (normally Improved).
 %   pyramid lists bin counts, e.g. [1 2 4 8]. beta has 2*D*K*sum(pyramid) entries.
 %   Each bin encodes its descriptors jointly; the concatenation is L2-normalized.
-%   The unused per-frame FV pass is retained to preserve historical execution.
+%   Empty or fully occluded sequences return a zero vector of the same size.
 %
 %   Adapted from pooling code by Jianchao Yang, NEC Research Lab America.
 %   Mentor: Kai Yu. July 2008; revised May 2010.
 
 dSize = size(covariances, 1) * size(covariances, 2) * 2;
 nSmp = size(feaSet, 2);
-fv_codes = zeros(dSize, nSmp);
-
-% compute the local feature for each local feature
-for iter1 = 1:nSmp
-    fv_codes(:, iter1) = vl_fisher(feaSet(:, iter1), means, covariances, priors, normalizeF);
-end
-
 % spatial levels
 pLevels = length(pyramid);
 % total spatial bins
@@ -60,5 +53,7 @@ if bId ~= tBins
 end
 
 beta = beta(:);
-beta = beta ./ sqrt(sum(beta.^2));
-% beta(isnan(beta)) = 0;% avoid NaN
+betaNorm = sqrt(sum(beta.^2));
+if betaNorm > 0
+    beta = beta ./ betaNorm;
+end

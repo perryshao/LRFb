@@ -1,75 +1,36 @@
 function [f, df, ddf] = costFuncRegMultPartGp_v1_42(initialTheta, X, Y, lambda, C, modality)
-% COSTFUNCREGMULTPARTGP_V1_42  Evaluate the legacy mixed-norm regression objective.
-%   X is D-by-N, Y is N-by-C, and modality contains feature-block sizes.
-%   The gradient and third-output issues are documented in docs/CODE_REVIEW.md.
-%   This historical objective is not the final linear-SVM classifier.
-
-if nargin < 7
-    preTinitialTheta = 0;
-end
-
-partGroup = 2;
-groupCof = 1;
-%% Compute the costJ of a particular choice of theta
-% compute cost costJ
-% X = DxN matrix, J and M is the partition parameters over joints and feature modalities
-D = size(X, 1);
-% J = D/jointNum; % the number of parts
-modality = [0, modality];
-% theta = DxC column vector
-theta = reshape(initialTheta, D, C);
-% costJ = single number
-costJ = sum(sum((X' * theta - Y).^2));
-
-costRegularizationTerm1 = sum(sqrt(sum(theta.^2, 2)));
-
-%% part group1
-tempJ = 0;
-for j = 1:partGroup(1)
-    tempM = sqrt(sum(theta(modality(j) + 1:modality(j) + modality(j + 1), :).^4, 1));
-    tempJ = tempJ + tempM;
-end
-costRegularizationTerm2 = tempJ;
-clear tempM tempJ;
-%% compute the sum cost
-costRegularizationTermRow = groupCof(1) * costRegularizationTerm2;
-costRegularizationTermMain = sum(costRegularizationTermRow);
-
-costJWithRegularization = costJ + lambda(1) * costRegularizationTerm1 + lambda(2) * costRegularizationTermMain;
-% Compute the partial derivatives and set gradient to the partial
-% derivatives of the cost w.r.t. each parameter in theta
-%% compute the gradient
-gradient = 2 * X * (X' * theta - Y);
-
-clear X;
-
-epsilon = 10e-8; % to avoid inf when divided by zero
-gradientRegularizationTerm1 = repmat((sum(theta.^2, 2) + epsilon).^(-1 / 2), 1, C) .* theta;
-
-%% part group1
-gradientRegularizationTerm2 = zeros(D, C);
-for j = 1:partGroup(1)
-    gradientRegularizationTerm2(modality(j) + 1:modality(j) + modality(j + 1), :) = ...
-        repmat(sum(theta(modality(j) + 1:modality(j) + modality(j + 1), :).^4, 1).^(1 / 4), modality(j + 1), 1) .* ...
-                                                                              ((theta(modality(j) + ...
-                                                                                  1:modality(j) + modality(j + ...
-                                                                                      1), :).^3) ./ ...
-                                                                              repmat(sum(theta(modality(j) + ...
-                                                                                  1:modality(j) + modality(j + ...
-                                                                                      1), :).^4, 1).^(3 / 4) + ...
-                                                                                          epsilon, modality(j + 1), 1));
-end
-
-%% compute the sum gradient
-gradient = gradient + lambda(1) * gradientRegularizationTerm1 + lambda(2) * gradientRegularizationTerm2;
-
-f = costJWithRegularization;
-gradient = reshape(gradient, D * C, 1); % vec(W)
-
-if nargout > 1
-    df = gradient;
-end
+% COSTFUNCREGMULTPARTGP_V1_42  Evaluate the mixed-norm regression objective.
+%   X is D-by-N, Y is N-by-C; modality gives contiguous feature-block sizes.
+%   Regularizers are the row L2 sum and the sum of squared group L4 norms.
+%   Zero rows/groups use zero (sub)gradients. A Hessian is not implemented.
 
 if nargout > 2
-    ddf = ddgradient;
+    error('LRFb:hessianUnsupported', 'Only the objective and gradient are available.');
+end
+D = size(X, 1);
+partGroup = length(modality);
+modality = [0 cumsum(modality)];
+theta = reshape(initialTheta, D, C);
+residual = X' * theta - Y;
+rowNorm = sqrt(sum(theta.^2, 2));
+rowDenominator = rowNorm;
+rowDenominator(rowDenominator == 0) = 1;
+gradientRegularizationTerm1 = theta ./ repmat(rowDenominator, 1, C);
+costRegularizationTerm2 = 0;
+gradientRegularizationTerm2 = zeros(D, C);
+for j = 1:partGroup
+    block = theta(modality(j) + 1:modality(j + 1), :);
+    groupNorm = sqrt(sum(block.^4, 1));
+    costRegularizationTerm2 = costRegularizationTerm2 + sum(groupNorm);
+    groupDenominator = groupNorm;
+    groupDenominator(groupDenominator == 0) = 1;
+    gradientRegularizationTerm2(modality(j) + 1:modality(j + 1), :) = ...
+        2 * block.^3 ./ repmat(groupDenominator, modality(j + 1) - modality(j), 1);
+end
+f = sum(sum(residual.^2)) + lambda(1) * sum(rowNorm) + lambda(2) * costRegularizationTerm2;
+gradient = 2 * X * residual + lambda(1) * gradientRegularizationTerm1 + ...
+           lambda(2) * gradientRegularizationTerm2;
+if nargout > 1
+    df = reshape(gradient, D * C, 1);
+end
 end

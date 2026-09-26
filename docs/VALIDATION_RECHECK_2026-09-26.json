@@ -1,0 +1,574 @@
+{
+  "date": "2026-09-26",
+  "scope": "Fresh rebuild and rerun of existing IID-style LRFb validation; no research-source fixes; adapted smoke tests, not MATLAB certification or paper reproduction",
+  "execution": {
+    "started_utc": "2026-09-26T11:54:54.344747+00:00",
+    "commands": [
+      [
+        "/Users/perryshao/anaconda3/bin/python3.11",
+        "/Users/perryshao/Documents/Projects/LRFb/validation/run.py",
+        "--vlfeat-root",
+        "/Users/perryshao/Documents/Projects/HBPL/third_party/vlfeat-0.9.20",
+        "--ip-data",
+        "/Users/perryshao/Documents/Projects/LegacyResearchAssets/datasets/Hand_Data/Data.mat",
+        "--output",
+        "/Users/perryshao/Documents/ChatGPT/旧项目整理/LRFb-validation-20260926/native"
+      ],
+      [
+        "/Users/perryshao/anaconda3/bin/python3.11",
+        "/Users/perryshao/Documents/Projects/LRFb/validation/octave_validate.py",
+        "--vlfeat-root",
+        "/Users/perryshao/Documents/Projects/HBPL/third_party/vlfeat-0.9.20",
+        "--ip-data",
+        "/Users/perryshao/Documents/Projects/LegacyResearchAssets/datasets/Hand_Data/Data.mat",
+        "--octave",
+        "/tmp/iid-octave/bin/octave-cli",
+        "--conda-prefix",
+        "/tmp/iid-octave",
+        "--native-work",
+        "/Users/perryshao/Documents/ChatGPT/旧项目整理/LRFb-validation-20260926/native",
+        "--output",
+        "/Users/perryshao/Documents/ChatGPT/旧项目整理/LRFb-validation-20260926/octave"
+      ]
+    ],
+    "pythonpath": "/tmp/lrfb-polish-venv/lib/python3.10/site-packages",
+    "runs": [
+      {
+        "stage": "native",
+        "exit_code": 0
+      },
+      {
+        "stage": "octave",
+        "exit_code": 0
+      }
+    ],
+    "finished_utc": "2026-09-26T11:57:01.766467+00:00",
+    "project_files_unchanged": true,
+    "other_copy_unchanged": true
+  },
+  "python_native": {
+    "schema_version": 1,
+    "timestamp": "2026-09-26T19:56:00+0800",
+    "matlab_executed": false,
+    "paper_reproduced": false,
+    "environment": {
+      "python": "3.11.7 (main, Dec 15 2023, 12:09:56) [Clang 14.0.6 ]",
+      "platform": "macOS-27.0-arm64-arm-64bit",
+      "numpy": "1.26.4"
+    },
+    "results": [
+      {
+        "check": "AST_evaluator_semantics",
+        "status": "passed",
+        "checks": [
+          "column-major reshape",
+          "one-based indexing",
+          "end",
+          "matrix right division",
+          "unsupported function fails"
+        ]
+      },
+      {
+        "check": "native_ASan_UBSan_valid_fixture",
+        "status": "passed"
+      },
+      {
+        "check": "circumcenter_one_output_gateway",
+        "status": "known_failure_reproduced",
+        "evidence": "ASan stack-buffer-overflow; main MATLAB callers request one output"
+      },
+      {
+        "check": "native_circumcenter_vs_linear_system",
+        "status": "passed",
+        "cases": 100,
+        "max_absolute_error": 7.105427357601002e-15,
+        "outputs_requested": 3
+      },
+      {
+        "check": "native_MBS_vs_independent_convex_hull_width",
+        "status": "passed",
+        "cases": 30
+      },
+      {
+        "check": "MATLAB_AST_descriptor_vs_Scipy_rotation",
+        "status": "passed",
+        "cases": 3,
+        "max_absolute_error": 1.1102230246251565e-16
+      },
+      {
+        "check": "native_VLFeat_Fisher_vs_independent_score_formula",
+        "status": "passed",
+        "cases": 18,
+        "max_absolute_error": 5.030698080332741e-16
+      },
+      {
+        "check": "MATLAB_AST_temporal_pool_vs_independent_bins",
+        "status": "passed",
+        "cases": 4,
+        "includes_empty_bins": true
+      },
+      {
+        "check": "180_degree_quaternion_and_empty_pool",
+        "status": "known_failure_reproduced",
+        "outcomes": [
+          "nonfinite quaternion",
+          "nonfinite pooled vector"
+        ]
+      },
+      {
+        "check": "MATLAB_AST_getLabels",
+        "status": "passed",
+        "training": 3,
+        "testing": 2,
+        "label_order": "preserved"
+      },
+      {
+        "check": "MATLAB_AST_sampler_more_than_twice_frames",
+        "status": "known_failure_reproduced",
+        "requested_per_sequence": 13,
+        "available_frames": 6
+      },
+      {
+        "check": "MATLAB_AST_regression_gradient_finite_difference",
+        "status": "known_failure_reproduced",
+        "analytic": 1.9999999750000004,
+        "numerical": 4.000000000026205
+      },
+      {
+        "check": "resampling_bridge_analytic_cubic",
+        "status": "passed",
+        "length": 64,
+        "rounding": "half away from zero"
+      },
+      {
+        "check": "IP_synthetic_pipeline",
+        "status": "passed",
+        "train": 18,
+        "test": 6,
+        "clusters": 64,
+        "descriptor_shape": [
+          60,
+          14
+        ],
+        "fisher_dimension": 53760,
+        "paper_dimension": 26880,
+        "frame_orthogonality_error": 1.665878102771425e-15,
+        "confusion": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ],
+        "accuracy": 1.0,
+        "caveat": "Synthetic smoke only; Python orchestration, all training descriptors instead of 50000 random samples; no MATLAB I/O or IP regression prepass"
+      },
+      {
+        "check": "MSRC12_synthetic_pipeline",
+        "status": "passed",
+        "train": 18,
+        "test": 6,
+        "clusters": 64,
+        "descriptor_shape": [
+          124,
+          14
+        ],
+        "fisher_dimension": 53760,
+        "paper_dimension": 26880,
+        "frame_orthogonality_error": 2.1677511976244507e-15,
+        "confusion": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ],
+        "accuracy": 1.0,
+        "caveat": "Synthetic smoke only; Python orchestration, all training descriptors instead of 50000 random samples; no MATLAB I/O or IP regression prepass"
+      },
+      {
+        "check": "real_IP_loader_protocol",
+        "status": "passed",
+        "data_shape": [
+          16000,
+          2
+        ],
+        "training": 8000,
+        "testing": 8000,
+        "fixed_8000_allocation_safe_for_this_file": true,
+        "sha256": "e94446a5f493c0eec922d03f1b73cd5b966794606f702b985175027469ba0a75"
+      },
+      {
+        "check": "real_IP_descriptor_probe",
+        "status": "passed",
+        "tested": 15,
+        "finite": 15,
+        "failures": []
+      },
+      {
+        "check": "real_IP_small_bridged_pipeline",
+        "status": "passed",
+        "train": 9,
+        "test": 6,
+        "clusters": 4,
+        "accuracy": 0.16666666666666666,
+        "caveat": "Selected finite subset only; not paper reproduction"
+      },
+      {
+        "check": "Python_MAT_v5_round_trip",
+        "status": "passed",
+        "caveat": "Does not validate MATLAB v7.3 save/load or cell-array workspace side effects"
+      }
+    ],
+    "AST_source_functions": {
+      "RRVdescriptor_BasedonFrames": 99,
+      "eye": 99,
+      "ones": 99,
+      "gradient": 99,
+      "sum": 361,
+      "sqrt": 9246,
+      "repmat": 99,
+      "size": 497,
+      "zeros": 363,
+      "reshape": 17832,
+      "Myrotm2quat": 8917,
+      "trace": 17834,
+      "acos": 8917,
+      "cos": 8917,
+      "fv_pooling_ts": 131,
+      "vl_fisher": 7349,
+      "length": 133,
+      "ceil": 522,
+      "find": 1953,
+      "isempty": 3889,
+      "isnan": 1936,
+      "rand_sampling_ts": 2,
+      "round": 2,
+      "randperm": 3,
+      "max": 6,
+      "cat": 2
+    },
+    "scope": "Original MATLAB subset execution + original native C/C++ + explicit Python orchestration; known bugs not fixed"
+  },
+  "octave": {
+    "octave_executed": true,
+    "matlab_executed": false,
+    "paper_reproduced": false,
+    "octave_findings": {
+      "octave_version": "10.3.0",
+      "original_v73_error": "save: Matlab file format -v7.3 is not yet implemented",
+      "geometry_and_pool": "executed original .m and rebuilt Octave MEX",
+      "oversampling_error": "rndidx(7): out of bound 6 (dimensions are 1x6)",
+      "degenerate_inputs": "180-degree quaternion and empty pooling are nonfinite",
+      "small_IP_padding_error": "TRAJDB(1): out of bound 0 (dimensions are 0x0)",
+      "gradient": [
+        1.9999999750000004,
+        4.000000000026205
+      ]
+    },
+    "numerical_comparisons": 51,
+    "max_errors": {
+      "resampling": 1.0269562977782698e-15,
+      "grid": 0.0,
+      "segments": 0.0,
+      "local_frames": 9.872311301784009e-15,
+      "descriptor": 9.037909309839165e-15,
+      "fisher": 2.3245294578089215e-16,
+      "temporal_pool": 8.300651832549022e-16,
+      "IP_train_descriptor_0": 1.815214645262131e-14,
+      "IP_train_descriptor_1": 1.778854841205657e-12,
+      "IP_train_descriptor_2": 2.7533531010703882e-14,
+      "IP_train_descriptor_3": 3.22519788653608e-14,
+      "IP_train_descriptor_4": 1.349753642188034e-12,
+      "IP_train_descriptor_5": 2.8421709430404007e-13,
+      "IP_train_descriptor_6": 6.37406794012918e-14,
+      "IP_train_descriptor_7": 3.582550922587302e-13,
+      "IP_train_descriptor_8": 9.103828801926284e-15,
+      "IP_test_descriptor_0": 2.9485303087994907e-12,
+      "IP_test_descriptor_1": 1.1097234242640752e-12,
+      "IP_test_descriptor_2": 1.0800804695065835e-12,
+      "IP_test_descriptor_3": 1.1352030426792226e-12,
+      "IP_test_descriptor_4": 7.985723193826288e-12,
+      "IP_test_descriptor_5": 1.0449419107771973e-12,
+      "IP_encoded_first_train": 4.163336342344337e-17,
+      "IP_encoded_test_0": 5.551115123125783e-17,
+      "IP_encoded_test_1": 1.3877787807814457e-16,
+      "IP_encoded_test_2": 1.3877787807814457e-16,
+      "IP_encoded_test_3": 8.326672684688674e-17,
+      "IP_encoded_test_4": 5.551115123125783e-17,
+      "IP_encoded_test_5": 5.551115123125783e-17,
+      "MSRC12_train_descriptor_0": 2.0983432005849956e-14,
+      "MSRC12_train_descriptor_1": 1.9581992277695193e-14,
+      "MSRC12_train_descriptor_2": 1.2678877045479986e-14,
+      "MSRC12_train_descriptor_3": 3.973037177029681e-14,
+      "MSRC12_train_descriptor_4": 3.009528390385263e-14,
+      "MSRC12_train_descriptor_5": 4.250045411088865e-14,
+      "MSRC12_train_descriptor_6": 2.953019773155319e-14,
+      "MSRC12_train_descriptor_7": 3.167301490525354e-14,
+      "MSRC12_train_descriptor_8": 2.1601210403732196e-14,
+      "MSRC12_test_descriptor_0": 5.413031134438029e-14,
+      "MSRC12_test_descriptor_1": 2.4730868394828853e-14,
+      "MSRC12_test_descriptor_2": 1.6661151625019244e-14,
+      "MSRC12_test_descriptor_3": 1.2974051086939165e-14,
+      "MSRC12_test_descriptor_4": 2.610498622823698e-14,
+      "MSRC12_test_descriptor_5": 1.0741841444117384e-14,
+      "MSRC12_encoded_first_train": 4.163336342344337e-17,
+      "MSRC12_encoded_test_0": 1.3877787807814457e-17,
+      "MSRC12_encoded_test_1": 4.163336342344337e-17,
+      "MSRC12_encoded_test_2": 2.7755575615628914e-17,
+      "MSRC12_encoded_test_3": 4.163336342344337e-17,
+      "MSRC12_encoded_test_4": 2.7755575615628914e-17,
+      "MSRC12_encoded_test_5": 5.551115123125783e-17
+    },
+    "pipelines": [
+      {
+        "dataset": "IP",
+        "unique_train": 9,
+        "test": 6,
+        "repeated_training_cells": 423,
+        "clusters": 4,
+        "original_sampling_target": 50000,
+        "prediction": [
+          3.0,
+          3.0,
+          2.0,
+          2.0,
+          3.0,
+          3.0
+        ],
+        "accuracy_percent": 66.66666666666666,
+        "source": "real IP subset"
+      },
+      {
+        "dataset": "MSRC12",
+        "unique_train": 9,
+        "test": 6,
+        "repeated_training_cells": 207,
+        "clusters": 4,
+        "original_sampling_target": 50000,
+        "prediction": [
+          1.0,
+          1.0,
+          2.0,
+          2.0,
+          3.0,
+          3.0
+        ],
+        "accuracy_percent": 100.0,
+        "source": "synthetic"
+      }
+    ],
+    "real_IP_indices_zero_based": [
+      0,
+      100,
+      200,
+      500,
+      501,
+      1000,
+      1100,
+      1200,
+      1500,
+      1501,
+      2000,
+      2100,
+      2200,
+      2500,
+      2501
+    ],
+    "native_memory_checks": {
+      "valid_fixture": "passed ASan/UBSan",
+      "original_one_output": "ASan overflow reproduced",
+      "original_gmm_three_outputs": "ASan heap-buffer-overflow reproduced"
+    },
+    "original_source_sha256": {
+      "build_recovered_mex.m": "00d4c2398c734d10ab67860c985dcf26bc5e9eaf3a1969a025ec6c741801e83b",
+      "setup_path.m": "fceee1b2662777479780390ff62bed15f9f9154e556b87c9e306b1fb3f89144b",
+      "mbs/Determine_xy.m": "4595721860be269e6b442802b1df6be70be4517a8bb16518d6dcf0d94911be18",
+      "mbs/splitting_curve_2D.m": "ede629b12fc4ea881053a50d510447c474f6375d63f3fe0ef5f5699a9be50d10",
+      "mbs/splitting_curve_3D.m": "8c8ef60bc6ac49787f55e95e17f57ef2aae96915fcd6e538250b1a0a949a7585",
+      "mbs/transform_firstOctant.m": "1940c5eb5fa5c6eab49cc4fd2e41498d7b2fff37a13e4f2b037f37db38bba303",
+      "mbs/src/MelkmanConvexHull.cpp": "0a7347005e92d66cc74b12ad4bc4a8c3611c169788b90dba5bf49404adf0bf29",
+      "mbs/src/Determine_segment.cpp": "b4a69082c4683a4cb91875ad59dc246c56055ab79f07643870e1a35a63f0cf26",
+      "mbs/src/unit_reco.cpp": "396608b9957a1e9f8f8fbf4f638b449502e4b76c222c60c4ce5d10e04178c5b9",
+      "mbs/src/MTMemoryPool.h": "4651993ed6aa82bf0422f0ffc98d53f8107d91d876c404bdca1fd6391ea32eb4",
+      "mbs/src/unit_reco.h": "17c01b039c85b6b193c07c42d740b7c098cb9d686f79071f15939b6049184bf0",
+      "mbs/src/tricircumcenter3d.cpp": "e21b6fdfaf9ce9bb931b211f00def7637d07f4ea6cef6f3c4a1990d2580f17cf",
+      "mbs/src/mini_math_kernel.h": "0f38146e6728c38e5d8ae99e710d7e8a78dc7251c79c34208058b35f2439c519",
+      "mbs/src/MemoryPool.h": "7779e70fae4c1d692e272911955a4e81a022a308cc7c636df0eb789bbd3ec28a",
+      "lrf/curve_grid.m": "3e970581d46efd8606dda6d2f6a9ec4a4e14208c1a3c1e88d0a13b53b4da0bad",
+      "lrf/Estimate_Frenet.m": "148d3892b895b617bbf76b14e9403ce1e8ea5fd7270d5c6c55529a9285b4c824",
+      "lrf/curve_grid_mean.m": "8921623fd48f3f81bec930a64085e1e4465f9097e3da796fc461265cc38cfb99",
+      "lrf/remove_stapoint.m": "f522906833f58002a88945063862d8ea3ebde06cdb192f1c83007744337ac9d2",
+      "lrf/fillstapoint.m": "a32f4a8208553feb6d6293d9f57b0a958a43cdf080525bb201794434124e1bde",
+      "experiments/MSRC12/predictBinRegression.m": "4366fae957be2626090e3d1742f4bf409e2619d7f5d39f2274af9513d349df2b",
+      "experiments/MSRC12/trainBinRegression_whole.m": "f6784ff8d3d7b7e1a1fd519368fb129bc15dcd2fdc49761efa5fae359ebf0e6c",
+      "experiments/MSRC12/load_data_bat.m": "ab2ca6d85930e0b628ba9d75efee2a87078d79b0efd4b2cef3f445588e472332",
+      "experiments/MSRC12/getLabels.m": "9f30c71b5d36f612fc09cf4b899d5826c597254d4dfa12a68ad09034fd92f8b4",
+      "experiments/MSRC12/trainBinRegression_2mod.m": "dbc3e12f076f9a9f3db2bc854ed731ad9bf5327671f7a2470c2b3615d96223d6",
+      "experiments/MSRC12/costFuncRegMultPartGp_v1_42.m": "59973c5590113b9350efb8811d065abcf139ede6df7f81ebb1557eec63705ebe",
+      "experiments/MSRC12/run.m": "23fe0a9e82bf364af5aed694dc071ebdc5ff5dd16f9b0763ab37a62d2e8cc365",
+      "experiments/MSRC12/GeneFisherCodeJointPyramid_2mod.m": "32a7fb6900a38d4e1fa43ed03ccabbfd7adef8063024e6106c7eaf9fc51aff28",
+      "experiments/MSRC12/trainBinRegression.m": "6ed6911170fb4cf37ec2693f298d110202a48a936d017036f843d475a16c4dad",
+      "experiments/MSRC12/costFunc.m": "a2b54adc504b85d84e44e20fdbe509f015fc7f0ea1af333ef55e7b9b335d3197",
+      "experiments/MSRC12/minimize.m": "1e63e487131946ec30f153fd56f960a728cf59aeef31ce953946c14022933144",
+      "experiments/MSRC12/GeneFisherCodeJointPyramid.m": "0d27b01facb75110c9ec768a6d9942942b819d038e0ed4e266c166d64a08c6bb",
+      "experiments/MSRC12/GeneSC.m": "aeb1fb390541a6d8a692c6d089323edddeae7b9f5bfff1415858d11660af70d0",
+      "experiments/MSRC12/predictBinRegression_2mod.m": "60753234fea91f4e6b84610faf61351d9b8e8f74cfda39ae1ed536f22d3e4a08",
+      "experiments/MSRC12/predictBinRegression_whole.m": "5ad20c13cfe653e1c02d8d59e97a3fb4cccf6f729b4712551babaa81eec4bf0d",
+      "experiments/MSRC12/sc3d_compute.m": "150031028ce8881902d5e73611dabb062879cb7211827a0cfaf3b3967a7f1557",
+      "experiments/IP/predictBinRegression.m": "36f6f32112b9b2ed2a25777a11c22d97378f8217b970065b4bd5ed119d1c826f",
+      "experiments/IP/trainBinRegression_whole.m": "4aca6b698f150f4e002566cc7d6b6cdd73fefd2018c99bee05ce53684d007fa9",
+      "experiments/IP/scfv_pooling_ts.m": "6f661767741cfdfd8f1627988ef491fc33db0e1b320706661d9793e66d3a8526",
+      "experiments/IP/load_IPtxt_bat.m": "2e25d2189f1d5f1b3e9e41111c805352855e9a6c96f9f66e0159dbe0bb4b6609",
+      "experiments/IP/pv_pooling_ts.m": "b6d5d13ff6757210a6e4372a0d21d80d95d3231f8e865961a5df0877b7f942a7",
+      "experiments/IP/getLabels.m": "4ebc89e0e966b3a17c894d4baf05e102af662bf4fbc103652853c901f813bfe7",
+      "experiments/IP/trainBinRegression_2mod.m": "45453d864e25f4aece653e060653ad60179798e203898d3384a073d1660b80b7",
+      "experiments/IP/readIPtxt.m": "24bb9047ca2d18d244b730829aeb4359e44fcbbb38bf1bd2292e6cde1ab61b80",
+      "experiments/IP/GeneScCodeJointPyramid.m": "18f0839ebce06a1b5cb6bb190f99899be8170caa7d82548735332391816a4ea5",
+      "experiments/IP/costFuncRegMultPartGp_v1_42.m": "8f65888ed79aba155c63a40ec0a3e46322f3cea84da3989f3caea048cd7e5dc4",
+      "experiments/IP/run.m": "1794a27fe7643b96363cdee18641d70b83d7b7713f49c3bef360e5844146d547",
+      "experiments/IP/sc_pooling_ts.m": "41ed34e44175e5bc49bf29ee18243dd99a529b738da34e865d11aba6419ace10",
+      "experiments/IP/Estimate_Frenet.m": "32d82eb67c7f2527c7a9e44a2ee868296a160ec1a77bbd50af5a956c4042c6f0",
+      "experiments/IP/GeneFisherCodeJointPyramid_2mod.m": "6d5fafaef5ad38b40137022fa68724a7c03ee5bbc1143ae56d524aa40452af04",
+      "experiments/IP/GeneScFisherCodeJointPyramid.m": "2979783315e8e665e1c90102211c1c0c24fc4e293f1d6c74d75b244e749780c4",
+      "experiments/IP/GeneShapeContextJointPyramid.m": "9dbbeb375e8e012b5d94d75b46cc6115de736a72ea5c718ae9d6a7ec1591d375",
+      "experiments/IP/trainBinRegression.m": "0cb8d09ede3e5e19bb478df42f409c850ecddfbe9503c489e5e57fad3bd3e954",
+      "experiments/IP/sc_approx_pooling_ts.m": "aa60541e605a22d6e3b10a977c617346b810796934e8c8d23ee2ad509f201fa0",
+      "experiments/IP/costFunc.m": "6178cf7adfd864f9ae257bfb4c6d7148d0f47b865e5d991775d683591995929d",
+      "experiments/IP/minimize.m": "1e63e487131946ec30f153fd56f960a728cf59aeef31ce953946c14022933144",
+      "experiments/IP/GeneFisherCodeJointPyramid.m": "0b2571cbf24422f1e7d705a6c3d53c8842a29a14f4a949405dd99abc8a04e924",
+      "experiments/IP/GeneSC.m": "39ee7ed99995ef5cd7e3c5d64bab0c567b117427ce393d295390f63e8d57d139",
+      "experiments/IP/predictBinRegression_2mod.m": "356b51b9d4b8919c6c8ca7696cc47752f31242b696bc637a09501d35bc448359",
+      "experiments/IP/predictBinRegression_whole.m": "5ad20c13cfe653e1c02d8d59e97a3fb4cccf6f729b4712551babaa81eec4bf0d",
+      "experiments/IP/sc3d_compute.m": "382bec91bcbf14291501551afd39dffe744e2a8fb514f0c040a572908fbf9809",
+      "encoding/fv_pooling_ts.m": "13997bd7df3aeead6d4a899735d7c1dbf7b853e803ec061b2220f3b5959ac4a8",
+      "encoding/GeneFisherCodeJointPyramid_whole.m": "0e2a12bc91dc0d030db38041d2f55c8482e48875b4e47ab47bcf77f1ccced414",
+      "encoding/rand_sampling_ts.m": "fd768ee7e45eb39d4efc3dbddaa578e2f646e17a90a14bbbd4e384a872ec6f1a",
+      "utils/TrjResizeTime.m": "5c9ac19a5b37fe653d261409173e3c421e8ce0b2ea04bb62794498cb0def3dad",
+      "descriptor/Myrotm2quat.m": "579b3858a6d1b6af70dee396a3378232dd3f88361b0f7a8f2a6a79024af8cdbe",
+      "descriptor/RRVdescriptor_BasedonFrames.m": "75b1ca417a04571691657388f1290626d3a9a5de7169be836aa4b943c3191a00",
+      "baselines/estimate_integral.m": "930a17b35badd537b03f88e164b23a37f00f35e11a181ece7fed1e7a4afeddd5",
+      "baselines/GeneBaselineDB.m": "888b4354f1bc2bdbeba3d975867d6dd3a6743f2c1dc6d3a619ecad17ed8ff8eb",
+      "baselines/Log_hogcalculator.m": "371854e43655670504f385a95c5df92738741315acdce84f9a33ca3780460f0f",
+      "baselines/normalization.m": "ea90e1157cd1e5e719c0229ae62557374032beab8b8f0dbbe975f89b96f49a82",
+      "baselines/Temporal_SSM.m": "65bb773ebf4b8aeade08e4efd17dbbb2c95d6ba9b42355126a3b0a825143fbbb",
+      "baselines/descriptor_comp.m": "4fa07b73db40c5dbd4c0949534d44f9f98087c1e04d9eeb987050141b3e984cb",
+      "baselines/integral_invariant.m": "7c3548eaaf9efadc6745595f585f261853b6b56193a8644825d7e14b48c1522b",
+      "thirdparty/vlfeat-0.9.20/toolbox/gmm/vl_gmm.m": "f8a04a70bf114ece372d702800a3705422e233880dabd434f764e57183eaaadc",
+      "thirdparty/vlfeat-0.9.20/toolbox/gmm/vl_gmm.c": "a6052bbeb12bcb7a22ff271e9ed2c067619bf8e76dea24ba857be51a63173a45",
+      "thirdparty/vlfeat-0.9.20/toolbox/fisher/vl_fisher.m": "e4f2fa9240a5d52ddf8cba45ffa9b0c81e865670bb1268a62bc7b2241d3f6002",
+      "thirdparty/vlfeat-0.9.20/toolbox/fisher/vl_fisher.c": "c8824e63597810c4d4c92d826f671ab47639490efac4cff22994b3419b56d633",
+      "thirdparty/libsvm-3.17/svm.h": "6910b7b64696c8b561a086294159a33761d3202a62e00e83f38ed66f6c63e47a",
+      "thirdparty/libsvm-3.17/svm-train.c": "d172e3e5834db128bcf75d79f10a118f8cf411cd9c0ddaba077ee8a62f2e0008",
+      "thirdparty/libsvm-3.17/svm-scale.c": "1e9696f3a93a2ace1e2df9e18b1aeb101282f72de7473ed77a5f70a84312834d",
+      "thirdparty/libsvm-3.17/svm-predict.c": "540a4dc0628ed329c20b70703100500a9666458bf9305d7484ef76511e883dbc",
+      "thirdparty/libsvm-3.17/svm.cpp": "86133bfc92e1e76f48c17a510f19f7f7a1a5dfdaba78e5ca4962b7186398f610",
+      "thirdparty/libsvm-3.17/matlab/svmtrain.c": "6bd4f14af6144f68ba1d6a536726df7168288915400eefc212304214411722ed",
+      "thirdparty/libsvm-3.17/matlab/libsvmread.c": "0a243b0bc29e7b20f8a1dd7a09808dcdf0b1ccafe5f3a26f392109f7df6f88c8",
+      "thirdparty/libsvm-3.17/matlab/svm_model_matlab.c": "09294d49ff8cf3a6c58847f1780ed55a8ee28373d1e0952533639afcf2116828",
+      "thirdparty/libsvm-3.17/matlab/make.m": "b855b3442155c14bf90c8cda40f01a2c6756e025c7a2e5d43484b4a03d0b2aec",
+      "thirdparty/libsvm-3.17/matlab/demo.m": "66536182bd353d0b827845b02e50487e7f3978575de68684fd1c2700d258f4a3",
+      "thirdparty/libsvm-3.17/matlab/libsvmwrite.c": "30e44a7f3e665a3e8bd147a1c797e0c13d14bb6188f5ad783686109c7e5e7fd4",
+      "thirdparty/libsvm-3.17/matlab/svm_model_matlab.h": "5596b8bb66b57c0a954f40c10c3cbfb902fd416ed2df1537fc1adfe711a82e85",
+      "thirdparty/libsvm-3.17/matlab/svmpredict.c": "ce31f4a823a8250f827bbc4e6acb7690044b2f25f5f7e06c9bc870eb79d7d705",
+      "thirdparty/ScSPM/sparse_coding/l2ls_learn_basis_dual.m": "1501813e316a72e1d9e75f7a7aeec1d16d4ee882651599c2ec3d93e8cf2e490a",
+      "thirdparty/ScSPM/sparse_coding/reg_sparse_coding.m": "93119872dd8698d353983a87607bdf8120f9c8cc2c930947edf62f655388b195",
+      "thirdparty/ScSPM/sparse_coding/feature_sign.m": "fd903d2c2d745bc2f596d3d101889f8b10f0977bb0f2ac3b47d54578bc3d299e",
+      "thirdparty/ScSPM/sparse_coding/L1QP_FeatureSign_yang.m": "23f2da9ab5f9184c6847cb4e710ee797e1ac2a0ce1671109e69caf7baa93a5b5",
+      "thirdparty/ScSPM/sparse_coding/getObjective_RegSc.m": "fa09b62167248ce8778c693ce9a7e308945e0fd5b077f193d77b3740790050f2",
+      "thirdparty/ScSPM/sparse_coding/L1QP_FeatureSign_Set.m": "2047cf873970649237c27efbbb4328091fd4b56c754f81b8fe6287a1e2c2e715",
+      "thirdparty/ScSPM/sparse_coding/sc2/getObjective2.m": "f3dce2fad951e7f570c06d3f9824b13173520dcdd87f39e42badfdedb4d24eb3",
+      "thirdparty/ScSPM/sparse_coding/sc2/cgf_fitS_sc2.m": "1f0fbb6703b8919cd7908da95d04f35de03a799232b8fc3052b7daadacfacd56",
+      "thirdparty/ScSPM/sparse_coding/sc2/cgf_sc.c": "a0caaa25488a1db2cda82bb1d7e5f7ac1fde168b4d0cb0d8c5dd3aa0c24901cd",
+      "thirdparty/ScSPM/sparse_coding/sc2/getObjective_sc.m": "8c8f642c46d7698fb5e76bfa2dc29a311ef7a7c5994e77d71a73b6efd775df0d",
+      "thirdparty/ScSPM/sparse_coding/sc2/getObjective_knn.m": "99ec4d6e48d7a1e094cf12ad144ed60508c28dac60532a2c5923732f0dabd1ab",
+      "thirdparty/ScSPM/sparse_coding/sc2/getObjective3.m": "4407d6a13eebe2421f38bacc79be41e9d39a7346cf4ce064aa6abd1c1ef41491",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/nrutil.c": "a6f0106b7585740a5bace484c44428616bdcb713f07ec0086b1a64f36cac2494",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/frprmn.c": "c9749b62389b2d60fef6a578a1d359ce4991d49a59c26b7c675d669592f66513",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/brent.c": "323ff3340915c812a1a3bd7a73cb6aea0292bfe177babe3f83f3ae7126fb816b",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/getreent.c": "0add5555a6bae3d1513c98dde3f6749f2dfca0b1061819177d65d575b284524c",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/nrutil.h": "48d4f20502a55d9cc11b7af3df452ffff8c19752a10b2af30f8065723edd4e9e",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/linmin.c": "5b952075792bb5a92614270bfffd3fcde315278ab8171eaa140aa8b298e3e991",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/impure.c": "90c2cb18da51bf1051f7fed2a569757862ca3c409d8ea2af3c0988ab373642b2",
+      "thirdparty/ScSPM/sparse_coding/sc2/nrf/mnbrak.c": "0880cd13d0d8ee9f60869005dbf367b5457e1d09cf94b185ebb8871357e0aef0",
+      "thirdparty/ScSPM/large_scale_svm/lbfgs2.m": "5b98cadad7aa4a9a7b12b6f498b26e0ca114addeb6f18bc28b747e7ee80d210c",
+      "thirdparty/ScSPM/large_scale_svm/regurgitate.m": "cc1d92543f463ac825274c998db7d0de02d67e9587872cb208e8f112c4c812c6",
+      "thirdparty/ScSPM/large_scale_svm/oneofc.m": "742c478a123312994eafc3c0d70099fd0d38d8767b7639cac131a6a687b2007f",
+      "thirdparty/ScSPM/large_scale_svm/li2nsvm_grad.m": "f3d4c3f271a6dc90373b1d4d13d76919e2daaeba92493ebf36a7c18d8a2fd70d",
+      "thirdparty/ScSPM/large_scale_svm/li2nsvm_multiclass_lbfgs.m": "6a3bcc0bcf7c3eee1eeab6119337464f4e092f48043130bd3e16b90f6d5cc9ad",
+      "thirdparty/ScSPM/large_scale_svm/li2nsvm_lbfgs.m": "f12beacf39c8ce65d5195f236904b98f316f97d3df11a40e4a9fb7ee9b264b1d",
+      "thirdparty/ScSPM/large_scale_svm/oneofc_inv.m": "a8c9c99576ce1c7b9e45ff6e8b646aec8ed9094e2676f7edeb5fcab64bfa8877",
+      "thirdparty/ScSPM/large_scale_svm/li2nsvm_multiclass_fwd.m": "248192be9aee8dfd27c0556649b0bb60aaad185b3a5843b75d70e01cb45b9baa",
+      "thirdparty/ScSPM/large_scale_svm/lineSearchWolfe.m": "a72d9c159045e5728db731cce296f1437ea6b8ce8570ca526fdc948e18255a09",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/Stochastic_Bosque.m": "6ab9e6f50e91f18f4a0234188f5c73ae20d184fcb9bf7f94f9df565467f89d30",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/eval_Stochastic_Bosque.m": "0746454eea18bfd71ff49ae12f2c59a2a1a5adb9348df76208713951dc357103",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/ancillary/weighted_hist.m": "51900498b15e9b6cd6b1739eb6239c33ce9995a99a35f1d19beddcd45be96ad2",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/ancillary/getargs.m": "b498da6eaf6bb27f188a6f9c0ffbbb243067d6a1c1d36590b0105e001ad0bd13",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/eval_cartree.m": "bbdbcb7299fe98a815d3e7025626f00da77a0475d76991534da26ea3a81f55e3",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/cartree.m": "352b509717b54f8e1ef0b76e5bb013ae7193be1d870b7d0fbf6d5e01917a5c08",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/best_cut_node.cpp": "a5dd6ecc806e7976a1728dfb580561a8778172d9f9ee441046f8b8b83e53d75c",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/mx_eval_cartree.c": "4190240cdb2ff8924936ffe135115321ffecdce3c6658251a8ceb95996d13ea4",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/GBCC.cpp": "776f01e60db1f72c6ed130d462565ce9fed40f8a867f11333e077811ed9468d3",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/node_cuts.h": "a36696cbbdba76cadba16f306ef83db35a16dcc16098a70bfc2ec8e7b1dc5743",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/GBCR.cpp": "93e4d743ec3707612a3ae6d44fe63006b09897c420f44896b42c38516f9690c6",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/quickie.h": "153936b9996d2688b39632e3f650418a451b5f5db34e966252298c13a8b468b7",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/GBCP.cpp": "42e02b0f483e852375c7a122e10e14c6c4faf757297113fe02981402fcf4f633",
+      "thirdparty/Stochastic_Bosque/Stochastic_Bosque/cartree/mx_files/mx_compile_cartree.m": "9499951c4579816e7816bdfc8b2bdf36066753d4979e93ad8deb274a24b50c34",
+      "thirdparty/netlab/dist2.m": "8c5b0d607b03b09dfc5a02a4df74830cbdca12bd2dfdb5e564ccd2a46d6fe170",
+      "thirdparty/ndSparse/ndSparse.m": "d98aa06ce4a9ecac08547ebeb1963e774f99fe8e057f8962591d92b4d9d8c520"
+    },
+    "validation_source_sha256": {
+      "validation/run_octave.m": "694e1e96aa3849dd278c688077aa8512a1ed00cd5bc918d6138a5679add36c74",
+      "validation/run.py": "f2ec046a79bb89cfc12fe17d4c230b24e5907abe986d61a7dfe08a581c8d7cb4",
+      "validation/matlab_subset.py": "f281aa3641ef4ff488fe24bd76a870a9a169eba84594bf7a6bf77a3b3475055a",
+      "validation/requirements.txt": "06a761b3ef5e88c979bb433fc3cbcb5fef16e327213d3e0ee0cde65fbdac49b8",
+      "validation/matrix.h": "8f82468318edd683b06ab568e282f3a6328252f9995c786e9ec7d8d7bb80f076",
+      "validation/native.py": "cbd31bcf375341a77a1612e2f38f8a23377732f8f028736f3fa4bf6d87785a47",
+      "validation/README.md": "39d8f8524a6fe1c7c5b214e23d27d57b137a7a5d239b45088afd9f1ef76784a1",
+      "validation/pipeline.py": "a42fb7836c5d70224e0b448f6fb94f573a27c4d8bae139ee0b5767599bc95538",
+      "validation/mex.h": "adf34bd913b40c77543b0f078d96bdb0087ea10e52f8ed2066fc5cf94f17b8d6",
+      "validation/octave_validate.py": "08477cde691690b3dd3be4479997c9be6fc65f68887552759ce2d728da5c1dc1",
+      "validation/vlfeat-arm64-cpuid.h": "51783601bc0606f9ba6b30d31edaf9179cd783144cc2dcef06dad9ed865155ee",
+      "validation/build_octave.m": "094425134239856261f628a879d5dc4d3bb6a0f861865f88f52781cef2c4fa67",
+      "validation/native_bridge.cpp": "6b3d2d7fde510403112d6a722577aec6c53ddb3945095c64c262405aaf346b6c",
+      "validation/octave_compat/save.m": "b61faf45ae9302ece7925c45d32fb6e1ce7846507645a81f292fef7c2227ef50",
+      "validation/octave_include/matrix.h": "64e030022e864e79c16abc492ef4ef2d69f56f73a6e79040267b491d8944d6e5"
+    },
+    "adapters": [
+      "three-output buffer around original circumcenter gateway",
+      "five-output buffer around original VLFeat GMM gateway",
+      "v5 MAT save and MATLAB filename extension compatibility",
+      "trim fixed 8000 slots for small IP loader fixture",
+      "repeat training-only descriptor cells to satisfy unchanged 50000-sample sampler"
+    ],
+    "excluded": [
+      "MATLAB ABI",
+      "full benchmark",
+      "IP regression prepass",
+      "PCA and alternative baselines"
+    ],
+    "IP_data_sha256": "e94446a5f493c0eec922d03f1b73cd5b966794606f702b985175027469ba0a75"
+  },
+  "evidence_directory": "/Users/perryshao/Documents/ChatGPT/旧项目整理/LRFb-validation-20260926",
+  "source_preservation": "All pre-existing project files in both copies were hash-identical before and after execution, excluding .git and __pycache__; only the report and README were then written."
+}

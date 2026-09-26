@@ -70,5 +70,8 @@ for n = 1:size(Data, 1)
         %         TRAJSAMPLES{2,test_i} = trajectory;
     end
 end
+% Retain only populated slots, including when validating a small dataset.
+TRAJDB = TRAJDB(:, 1:db_i);
+TRAJSAMPLES = TRAJSAMPLES(:, 1:test_i);
 save DB TRAJDB;
 save SAMPLES TRAJSAMPLES;

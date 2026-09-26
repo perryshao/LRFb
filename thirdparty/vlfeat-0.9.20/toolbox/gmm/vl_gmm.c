@@ -91,10 +91,10 @@ mexFunction (int nout, mxArray * out[], int nin, const mxArray * in[])
     vlmxError (vlmxErrInvalidArgument,
                "At least two arguments required.");
   }
-  else if (nout > 5)
+  else if (nout < 1 || nout > 5)
   {
     vlmxError (vlmxErrInvalidArgument,
-               "Too many output arguments.");
+               "Expected one to five output arguments.");
   }
 
   classID = mxGetClassID (IN(DATA)) ;
@@ -334,23 +334,25 @@ mexFunction (int nout, mxArray * out[], int nin, const mxArray * in[])
 
   LL = vl_gmm_cluster(gmm, data, numData) ;
 
-  /* copy centers */
+  /* Allocate only outputs requested by the caller (local gateway fix). */
   OUT(MEANS) = mxCreateNumericMatrix (dimension, numClusters, classID, mxREAL) ;
-  OUT(COVARIANCES) = mxCreateNumericMatrix (dimension, numClusters, classID, mxREAL) ;
-  OUT(PRIORS) = mxCreateNumericMatrix (numClusters, 1, classID, mxREAL) ;
-  OUT(POSTERIORS) = mxCreateNumericMatrix (numClusters, numData, classID, mxREAL) ;
-
   memcpy (mxGetData(OUT(MEANS)),
           vl_gmm_get_means (gmm),
           vl_get_type_size (dataType) * dimension * vl_gmm_get_num_clusters(gmm)) ;
 
-  memcpy (mxGetData(OUT(COVARIANCES)),
-          vl_gmm_get_covariances (gmm),
-          vl_get_type_size (dataType) * dimension * vl_gmm_get_num_clusters(gmm)) ;
+  if (nout > 1) {
+    OUT(COVARIANCES) = mxCreateNumericMatrix (dimension, numClusters, classID, mxREAL) ;
+    memcpy (mxGetData(OUT(COVARIANCES)),
+            vl_gmm_get_covariances (gmm),
+            vl_get_type_size (dataType) * dimension * vl_gmm_get_num_clusters(gmm)) ;
+  }
 
-  memcpy (mxGetData(OUT(PRIORS)),
-          vl_gmm_get_priors (gmm),
-          vl_get_type_size (dataType) * vl_gmm_get_num_clusters(gmm)) ;
+  if (nout > 2) {
+    OUT(PRIORS) = mxCreateNumericMatrix (numClusters, 1, classID, mxREAL) ;
+    memcpy (mxGetData(OUT(PRIORS)),
+            vl_gmm_get_priors (gmm),
+            vl_get_type_size (dataType) * vl_gmm_get_num_clusters(gmm)) ;
+  }
 
   /* optionally return loglikelihood */
   if (nout > 3) {
@@ -359,6 +361,7 @@ mexFunction (int nout, mxArray * out[], int nin, const mxArray * in[])
 
   /* optionally return posterior probabilities */
   if (nout > 4) {
+    OUT(POSTERIORS) = mxCreateNumericMatrix (numClusters, numData, classID, mxREAL) ;
     memcpy (mxGetData(OUT(POSTERIORS)),
             vl_gmm_get_posteriors (gmm),
             vl_get_type_size (dataType) * numData * vl_gmm_get_num_clusters(gmm)) ;
