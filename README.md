@@ -9,7 +9,7 @@ comparison descriptors of Table 1.
 This directory is a consolidated, **code-only** reconstruction of a project that was
 spread across two networked MATLAB workspaces, local folders and the HBPL clean-up.
 Intermediate results (`.mat`), figures and raw datasets are deliberately **not**
-included — see [Provenance](#provenance) and [Datasets](#datasets).
+included — see [Datasets](#datasets).
 
 The [2026-09-24 Fisher-code search](docs/FISHER_CODE_SEARCH_2026-09-24.md)
 verifies local and remote encoder copies, locates the full VLFeat C source, and
@@ -220,58 +220,3 @@ There are no Apple-silicon (`maca64`) builds of anything; rebuild from source th
 now carry project-specific output-contract fixes; they are not byte-identical.
 For the repaired MATLAB gateways and path precedence, see the
 [rebuild instructions](docs/DEFECT_FIXES_2026-09-26.md#matlab-中使用修复后的-mex).
-
----
-
-## Provenance
-
-Every file's origin and original md5 is in [`tools/provenance.tsv`](tools/provenance.tsv):
-185 verbatim copies, 2 modified, 1 new at initial consolidation. These are the
-original-source hashes; `tools/polish_manifest.tsv` tracks the subsequent cosmetic edits.
-
-The paper's code is the **Feb 2018 state of the second SMB share**
-`smb://perry-System-Product-Name._smb._tcp.local/9592df65-…/work` (the Ubuntu server the
-drivers' `/home/data/…` paths point to):
-`IPEvaluatingCode/` and `MicrosoftGestureEvaluatingCode/`. On 2026-09-21 the HBPL clean-up
-**moved** most of those files to `~/Documents/Projects/_moved_HBPL_remote/` (dates
-preserved) and copied them into `HBPL/extra/{ip_dataset,msrc12_gesture}` — there the share
-versions are the `*__remote.m` files and the plain names are the older local versions.
-Files still on the share were read from the share; moved files from
-`_moved_HBPL_remote`. The share versions were chosen because they are the ones that match
-the paper: two hands only, `GeneFisherCodeJointPyramid_whole`, K = 64, Z = 3, linear SVM.
-The local versions (in the Trash since the HBPL clean-up; the HBPL copies have lost their
-dates) run the RRV / binary-regression experiments instead.
-
-Other sources: `Determine_xy`, `transform_firstOctant`, `MelkmanConvexHull`, the w32 mex
-and the Table 1 invariants from the top level of the first share (`MatlabProjects/work`,
-also mounted as `work`); the maci64 mex from IID; `Temporal_SSM`, `Log_hogcalculator`,
-`libsvm-3.17` and `ScSPM` from TSSM.
-
-At initial consolidation, none of the paper's files were modified. The two `modified` rows are `Temporal_SSM.m` and
-`Log_hogcalculator.m`, taken from TSSM, which had fixed them (argument defaults, a
-`nargin` test). New: `baselines/GeneBaselineDB.m`, plus `setup_path.m` and the READMEs.
-
-No MATLAB was available during consolidation, so **nothing here has been run**.
-The later code review found unresolved dependencies in the legacy 2-D MBS and SSM
-baseline branches, plus runtime defects in the MEX and optional regression paths.
-See [docs/CODE_REVIEW.md](docs/CODE_REVIEW.md); the earlier static dependency check
-was not sufficient to establish that every alternative is runnable.
-
-Not included:
-
-- `preprocess_bat` (Kalman smoothing of C3D mocap), a stale commented line in the MSRC-12
-  driver from the IID era;
-- the rest of the old `ToZP/` RRV toolbox (`Func_RRVdescriptor`, `RRV_AngTrj*`, `CalSIGN`,
-  …) — the RRV descriptor of Guo et al. (IEEE TCyb 2018), which HBPL keeps;
-- all other MSRC-12 files from the SSM / IID era (DTW, HMM, clustering, retrieval), which
-  live in IID and TSSM;
-- `.mat` caches (`RRV_DB`, `SC_DB`, `traindata`, `Results/reg_sc_*`, `train_test*/`),
-  figures and datasets.
-
-### Relation to the other consolidated projects
-
-| Project | Shares with LRFb |
-|---|---|
-| IID (`Integral-Invariants`) | the MBS machinery (`splitting_curve_*`, `Determine_segment`, `tricircumcenter3d`) and `Estimate_Frenet`; the Table 1 integral / differential invariants |
-| TSSM (`Temporal-Self-Similarity-Description`) | the SSM baseline |
-| HBPL | the same IP / MSRC-12 folders under `extra/`, labelled there as outside HBPL's papers — they are this paper's experiments. Note that `HBPL/extra/msrc12_gesture` has no `ToZP/`, so `RRVdescriptor_BasedonFrames` does not resolve there |
