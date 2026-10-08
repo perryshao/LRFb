@@ -11,25 +11,11 @@ spread across two networked MATLAB workspaces, local folders and the HBPL clean-
 Intermediate results (`.mat`), figures and raw datasets are deliberately **not**
 included — see [Datasets](#datasets).
 
-The [2026-09-24 Fisher-code search](docs/FISHER_CODE_SEARCH_2026-09-24.md)
-verifies local and remote encoder copies, locates the full VLFeat C source, and
-distinguishes the existing FV pipeline from baseline experiment scripts that have
-not yet been located.
-
-The [code review](docs/CODE_REVIEW.md) records the 2026-09-24 formatting and comment
-cleanup, verification, and unresolved runtime issues. See [CONTRIBUTING.md](CONTRIBUTING.md)
-for the formatting tools and conventions.
-
-The [2026-09-26 defect fixes](docs/DEFECT_FIXES_2026-09-26.md) repair the two MEX
-output overflows, half-turn quaternions, empty pooling, oversampling, regression
-gradients and small-IP loader padding. All 19 Python/native checks and 51
-Octave/Python comparisons pass; the Octave pipeline uses the repaired gateways
-directly. See [validation/README.md](validation/README.md) to rerun the checks.
-Historical evidence remains in the [numerical report](docs/NUMERICAL_VALIDATION.md),
-[Octave report](docs/OCTAVE_VALIDATION.md) and
-[pre-fix rerun](docs/VALIDATION_RECHECK_2026-09-26.md).
-This is not full MATLAB certification or reproduction of the paper. The archived
-MEX binaries are unchanged: rebuild the two corrected gateways before MATLAB use.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for code style and maintenance, and
+[validation/README.md](validation/README.md) for Python, native memory and Octave
+checks. The suite exercises the repaired MEX output contracts and numerical edge
+cases; small-data checks do not certify full MATLAB execution or paper reproduction.
+The archived MEX binaries are unchanged and must be rebuilt from repaired source.
 
 ---
 
@@ -219,4 +205,4 @@ There are no Apple-silicon (`maca64`) builds of anything; rebuild from source th
 `Determine_segment.cpp` shares its origin with IID. The circumcenter gateways
 now carry project-specific output-contract fixes; they are not byte-identical.
 For the repaired MATLAB gateways and path precedence, see the
-[rebuild instructions](docs/DEFECT_FIXES_2026-09-26.md#matlab-中使用修复后的-mex).
+[rebuild instructions](validation/README.md#rebuilding-the-repaired-matlab-gateways).

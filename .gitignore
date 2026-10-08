@@ -65,3 +65,14 @@ docs/fisher-search-evidence-*/
 .venv/
 __pycache__/
 *.pyc
+
+# Local AI instructions and intermediate Markdown work records (retain on disk).
+[Aa][Gg][Ee][Nn][Tt][Ss].[Mm][Dd]
+[Rr][Ee][Vv][Ii][Ee][Ww].[Mm][Dd]
+/docs/CODE_REVIEW*.md
+/docs/DEFECT_FIXES_*.md
+/docs/FISHER_CODE_SEARCH_*.md
+/docs/NUMERICAL_VALIDATION*.md
+/docs/OCTAVE_VALIDATION*.md
+/docs/VALIDATION_RECHECK_*.md
+/docs/MEX_RECOVERY*.md

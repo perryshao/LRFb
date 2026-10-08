@@ -2,9 +2,9 @@
 
 This suite follows IID's layered validation approach. It executes current LRFb
 source and checks independent numerical references, native ASan/UBSan contracts,
-and original MATLAB functions in Octave. The confirmed defects were fixed on
-2026-09-26; tests now require successful behavior, not expected crashes.
-See [fixes and results](../docs/DEFECT_FIXES_2026-09-26.md).
+and original MATLAB functions in Octave. Tests require successful output contracts
+and numerical behavior, including half-turn rotations, empty pooling, oversampling
+and regression gradients.
 
 ## Run
 
@@ -72,7 +72,7 @@ Temporary environments may disappear after system cleanup.
 The Octave path retains one format adapter: `octave_compat/save.m` substitutes
 v5 MAT for unsupported MATLAB v7.3 and supplies implicit `.mat` filename extensions.
 It is only added during validation. Original historical MEX files are never replaced.
-MATLAB deployment must rebuild the changed gateways; see the fix report's instructions.
+MATLAB deployment must rebuild the changed gateways; see the instructions below.
 
 ## Scope
 
@@ -87,5 +87,32 @@ No reported tiny-sample accuracy is a benchmark result. Full `run.m`, complete
 IP regression training, PCA, alternative baselines, 2-D MBS, full benchmark data,
 MATLAB toolboxes/ABI, v7.3 serialization and shipped old binaries remain outside
 this suite's certification. Logs, MAT data and compiled products stay outside
-the repository. The archived September 25 and pre-fix September 26 reports
-preserve the evidence for the original defects and test-only workarounds.
+the repository.
+
+## Rebuilding the repaired MATLAB gateways
+
+Changing source does not update the archived MEX binaries. Octave MEX files cannot
+be used as MATLAB MEX files. On the target MATLAB platform, prepare a supported
+compiler, full VLFeat 0.9.20 headers and a matching C library, then build into a
+separate directory:
+
+```matlab
+root = pwd; % Run from the LRFb project root.
+outputDir = fullfile(root, 'build', 'fixed-mex');
+if ~exist(outputDir, 'dir'), mkdir(outputDir); end
+fullVl = '/absolute/path/to/full/vlfeat-0.9.20';
+vlLibrary = '/absolute/path/to/compatible/libvl.dylib'; % Linux .so / Windows .lib
+mex('-R2017b', '-outdir', outputDir, fullfile(root, 'mbs/src/tricircumcenter3d.cpp'));
+mex('-R2017b', '-outdir', outputDir, ['-I' fullVl], ['-I' fullfile(fullVl, 'toolbox')], ...
+    fullfile(root, 'thirdparty/vlfeat-0.9.20/toolbox/gmm/vl_gmm.c'), vlLibrary);
+setup_path;
+addpath(outputDir, '-begin');
+clear tricircumcenter3d vl_gmm;
+which tricircumcenter3d -all
+which vl_gmm -all
+```
+
+Both functions must resolve to the new builds first, and the dynamic library must
+be loadable. These are MATLAB build instructions, not a claim that the Octave suite
+certifies MATLAB compilation or ABI compatibility. Other required MEX modules must
+also match the target platform.

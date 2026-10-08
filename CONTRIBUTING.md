@@ -43,8 +43,8 @@ python3 -m venv /tmp/lrfb-dev
 
 Use `mh_style --fix` or `clang-format -i` on the same targets to format changes.
 Inspect the diff afterwards. The lint command currently reports the three historical
-chained comparisons recorded in [the code review](docs/CODE_REVIEW.md); they have not
-been suppressed or silently changed.
+chained comparisons in the archived sources; they have not been suppressed or
+silently changed.
 
 To validate a formatting-only change against a tar.gz backup whose top-level folder
 is named `LRFb`:

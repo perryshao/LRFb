@@ -21,8 +21,8 @@ still connected: its `sc3d_compute` call sits, commented out, in `GeneSC.m`, whi
 `GeneShapeContextJointPyramid.m` encode `SC_DB`. For the other four rows no generator was
 found in any source location (the two SMB shares, local `Projects/Work`, HBPL, IID, TSSM).
 The available files do not establish whether the other blocks were overwritten or
-survive in another backup. See the [2026-09-24 search report](../docs/FISHER_CODE_SEARCH_2026-09-24.md)
-for verified Fisher-code locations and the limits of the search.
+survive in another backup. The bundled GMM/Fisher implementation does not establish
+that the original baseline experiment wiring has been recovered.
 
 **`GeneBaselineDB.m` is new code**, written during consolidation and **never run** (no
 MATLAB was available). It reconnects the descriptor implementations above to the
@@ -55,8 +55,8 @@ Parameters the paper does not state were set as follows. They are guesses; chang
 
 - The SSM adapter is not currently self-contained: `Temporal_SSM(..., 5, 1, 0)`
   requires `distance_matrix_norm2`, which is not bundled. Other metric modes
-  also reference missing helpers. See [the code review](../docs/CODE_REVIEW.md)
-  before using the reconstructed baseline adapter.
+  also reference missing helpers. Resolve these dependencies before using the
+  reconstructed baseline adapter.
 - **Multiscale SSM [23] is not this code.** [23] is Guo, Li & Shao, *IEEE TII* 2017. Its
   multiscale implementation has not yet been located. The paper explicitly states
   that Table 1 uses the same encoding procedure and linear SVM for the compared
