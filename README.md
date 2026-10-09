@@ -11,9 +11,8 @@ spread across two networked MATLAB workspaces, local folders and the HBPL clean-
 Intermediate results (`.mat`), figures and raw datasets are deliberately **not**
 included — see [Datasets](#datasets).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for code style and maintenance, and
-[validation/README.md](validation/README.md) for Python, native memory and Octave
-checks. The suite exercises the repaired MEX output contracts and numerical edge
+See [validation/README.md](validation/README.md) for Python, native memory and
+Octave checks. The suite exercises the repaired MEX output contracts and numerical edge
 cases; small-data checks do not certify full MATLAB execution or paper reproduction.
 The archived MEX binaries are unchanged and must be rebuilt from repaired source.
 
@@ -80,8 +79,7 @@ projects. The toolboxes under `thirdparty/` keep their own licences; see
 
 ## Code vs. paper
 
-The historical computations below are preserved. Formatting and comments were
-polished on 2026-09-24; see `tools/polish_manifest.tsv` for before/after hashes.
+The historical experiment settings and conventions below are preserved.
 
 | Item | Paper | Code as last saved |
 |---|---|---|
@@ -121,7 +119,7 @@ LRFb/
 │   └── MSRC12/     MSRC-12 driver and dataset-specific helpers
 ├── thirdparty/   vlfeat (vl_gmm / vl_fisher only), libsvm-3.17, netlab dist2, ndSparse,
 │                 ScSPM subsets, Stochastic_Bosque
-├── tools/        provenance.tsv — origin and md5 of every file
+├── tools/        check_polish.py — source-preservation checks for formatting edits
 └── setup_path.m
 ```
 

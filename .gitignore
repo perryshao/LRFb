@@ -76,3 +76,15 @@ __pycache__/
 /docs/OCTAVE_VALIDATION*.md
 /docs/VALIDATION_RECHECK_*.md
 /docs/MEX_RECOVERY*.md
+
+# Local contributor guidance and generated audit/provenance records.
+/CONTRIBUTING.md
+/docs/polish-*.json
+/docs/FISHER_CODE_HASHES_*.tsv
+/docs/DEFECT_FIXES_*.json
+/docs/NUMERICAL_VALIDATION*.json
+/docs/OCTAVE_VALIDATION*.json
+/docs/VALIDATION_RECHECK_*.json
+/docs/MEX_RECOVERY*.json
+/tools/provenance.tsv
+/tools/polish_manifest.tsv

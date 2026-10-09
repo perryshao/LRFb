@@ -2,8 +2,8 @@
 
 These toolboxes are **not** covered by this project's GPL-3.0 licence. Each remains under
 its own authors' copyright and terms. They are bundled because the pipeline calls into
-them directly; each was reduced to the code it needs. Origins and md5s are in
-`../tools/provenance.tsv`.
+them directly; each was reduced to the code it needs. Original licence files and
+source credits remain with the bundled code.
 
 | Toolbox | Needed by | Licence |
 |---|---|---|
